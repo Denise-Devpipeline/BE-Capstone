@@ -5,9 +5,25 @@ from db import db
 from models.customer import Customer, customer_schema, customers_schema
 from util.reflection import populate_object
 
-
+#When a customer is being created they must have all of the fields filled in.  The "active" status should be automatic.
 # CREATE
+def add_user():
+   req_data = request.form if request.form else request.json 
 
+   if not req_data:
+       return jsonify("Please enter all required fields."), 401
+   
+   new_customer = Customer.new_customer()
+   populate_object(new_customer, req_data)
+
+   new_customer.password = generate_passport_hash(new_customer.password). decode('utf8')
+
+   db.session.add(new_customer)
+   db.session.commit()
+
+   return jsonify(customer_schema.dump(new_customer)), 200
+   
+    
 def update_user(id):
     req_data = request.form if request.form else request.json
     existing_user = db.session.query(Users).filter(Users.user_id == id).first()

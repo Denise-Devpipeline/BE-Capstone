@@ -10,12 +10,12 @@ class Customer(db.Model):
     cust_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name = db.Column(db.String(), nullable=False)
     last_name = db.Column(db.String(), nullable=False)
-    phone = db.Column(db.String())
+    phone = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
-    city = db.Column(db.String())
-    state = db.Column(db.String())
-    event_date = db.Column(db.String())
+    city = db.Column(db.String(), nullable=False)
+    state = db.Column(db.String(), nullable=False)
+    event_date = db.Column(db.String(), nullable=False)
     
     #Need assistance understanding this part when using an XREF table.
     service_id = db.Column(UUID(as_uuid=True), db.ForeignKey("EventServices.event_id"), nullable=False)
