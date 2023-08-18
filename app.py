@@ -10,7 +10,7 @@ from models.event_planner import EventPlanner, event_planner_schema, event_plann
 from models.event_svcs import EventSvcs, event_svcs_schema, event_svc_schema
 from models.planner_event_xref import PlannerEventXref, planner_event_xref_schema, planner_event_xrefs_schema
 from models.venue import Venue, venue_schema, venues_schema
-from models.auth_token import AuthToken, auth_token_schema
+from models.auth_tokens import AuthToken, auth_tokens_schema
 
 # This is from hmwk but not sure what yet what it's used for (util (is file).reflection (what is reflection))
 from util.reflection import populate_object
@@ -22,8 +22,8 @@ from routes.planner_event_xref import planeventxref
 from routes.venue_routes import venue
 
 database_pre = os.environ.get("DATABASE_PRE")
-database_addr = os.environ.get("DATABASE_ADDR")
 database_user = os.environ.get("DATABASE_USER")
+database_addr = os.environ.get("DATABASE_ADDR")
 database_port = os.environ.get("DATABASE_PORT")
 database_name = os.environ.get("DATABASE_NAME")
 
