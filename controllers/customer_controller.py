@@ -1,4 +1,4 @@
-from flask import request, Response, jsonify
+from flask import request, jsonify
 from flask_bcrypt import generate_passport_hash
 
 from db import db
@@ -10,6 +10,8 @@ from util.reflection import populate_object
 #Customers can create themselves and see ONLY thier information.
 #There should be a message that appears if they try and access ALL Customers or Event Planners that they cannnot.
 #Customers cannot delete themselves or deactivate themselves.
+
+
 
 # CREATE
 def add_customer():
@@ -26,7 +28,7 @@ def add_customer():
    db.session.add(new_customer)
    db.session.commit()
 
-   return jsonify(customer_schema.dump(new_customer)), 200
+   return jsonify({"Message": "Customer added", "customer": customer_schema.dump(new_customer)}), 200
    
 #UPDATE    # I want the customer to be able to update their Customer Table information only.
 def update_customer(id):
@@ -54,7 +56,7 @@ def update_customer(id):
 
     db.session.commit()
 
-    return jsonify("Customer information Updated"), 200
+    return jsonify({"Message": "Customer information Updated"}), 200
 
 
 # DEACTIVATE  I wanted to prevent them from deactivating themselves but not sure that was accomplished here. 
@@ -81,7 +83,7 @@ def deactivate_customer(id):
     customer.active=False
     db.session.commit()
 
-    return jsonify ("Customer Deactivated"), 200
+    return jsonify ({"Message": "Customer Deactivated"}), 200
 
 
 # ACTIVATE  If the Customer is deactivated by the Event Planner then Customer should not be able to activate themselves.  
@@ -109,10 +111,10 @@ def activate_customer(id):
     customer.active=True
     db.session.commit()
 
-    return jsonify ("Customer Activated"), 200
+    return jsonify ({"Message": "Customer Activated"}), 200
 
 
-# DELETE Customer should not be allowed to Delete themselves.  Only the Event Planner can delete customer.  
+# DELETE Customer should not be allowed to Delete themselves.  Only the Event Planner can delete customer. 
 def delete_customer(id):
     customer = db.sesstion.query(Customer).filter(Customer.cust_id == id).first()
 
@@ -136,4 +138,4 @@ def delete_customer(id):
     db.session.delete(customer)
     db.session.commit()
 
-    return jsonify ("Customer Deleted"), 200
+    return jsonify ({"Message": "Customer Deleted"}), 200

@@ -26,7 +26,7 @@ def add_event_planner():
     db.session.add(new_event_planner)
     db.session.commit()
 
-    return jsonify(event_planner_schema.dump(new_event_planner)), 200
+    return jsonify({"Message": "Event Planner Added", "event_planner": event_planner_schema.dump(new_event_planner)}), 200
 
 # READ  ********The Event Planner has access to see ALL Event Planners. 
 def get_all_event_planners():
@@ -55,7 +55,7 @@ def update_event_planner(id):
 
     db.session.commit()
 
-    return jsonify("Event Planner information updated"), 404
+    return jsonify({"Message": "Event Planner information Updated"}), 200
 
 
 # DEACTIVATE 
@@ -69,7 +69,7 @@ def deactivate_event_planner(id):
 
     db.session.commit()
 
-    return jsonify("Event Planner deactivated"), 200
+    return jsonify ({"Message": "Event Planner Deactivated"}), 200
 
 
 #ACTIVATE
@@ -83,7 +83,7 @@ def deactivate_event_planner(id):
 
     db.session.commit()
 
-    return jsonify("Event Planner activated"), 200
+    return jsonify ({"Message": "Event Planner Activated"}), 200
 
 
 # DELETE
@@ -96,4 +96,4 @@ def delete_event_planner(id):
   db.session.delete(event_planner)
   db.session.commit()
   
-  return jsonify("Event Planner deleted"), 200
+  return jsonify ({"Message": "Event Planner Deleted"}), 200

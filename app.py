@@ -1,8 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask
+from routes import event_services_routes
 from db import *
 
 import os
 from flask_marshmallow import Marshmallow
+
+app = Flask(__name__)
+
 
 # Why do I need these SCHEMAS written this way? (2 schemas each)
 from models.customer import Customer, customer_schema, customers_schema
@@ -37,9 +41,10 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 init_db(app.db)
 ma = Marshmallow(app)
 
-app.register_blueprint(cust)
-app.register_blueprint(eplanner)
-app.register_blueprint(eservices)
-app.register_blueprint(venue)
+app.register_blueprint(Customer)
+app.register_blueprint(EventPlanner)
+app.register_blueprint(EventSvcs)  #OR what is on line 47
+app.register_blueprint(event_services_routes, url_prefix='/event_services')
+app.register_blueprint(Venue)
 # Does auth belong in here?
-app.register_blueprint(auth)
+app.register_blueprint(Auth)
