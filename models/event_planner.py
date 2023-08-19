@@ -8,7 +8,7 @@ class EventPlanner(db.Model):
     __tablename__= "Event Planners"
 
     planner_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    phone = db.Column(db.String())
+    phone = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=False, unique=True)
     password = db.Column(db.String(), nullable=False)
     specialty = db.Column(db.String(), nullable=False)

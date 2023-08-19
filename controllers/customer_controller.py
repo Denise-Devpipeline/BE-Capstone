@@ -5,9 +5,14 @@ from db import db
 from models.customer import Customer, customer_schema, customers_schema
 from util.reflection import populate_object
 
-#When a customer is being created they must have all of the fields filled in.  The "active" status should be automatic.
+#When a customer is being created they must have all of the fields filled in.  
+#The "active" status should be automatic.
+#Customers can create themselves and see ONLY thier information.
+#There should be a message that appears if they try and access ALL Customers or Event Planners that they cannnot.
+#Customers cannot delete themselves or deactivate themselves.
+
 # CREATE
-def add_user():
+def add_customer():
    req_data = request.form if request.form else request.json 
 
    if not req_data:
@@ -23,74 +28,112 @@ def add_user():
 
    return jsonify(customer_schema.dump(new_customer)), 200
    
-    
-def update_user(id):
-    req_data = request.form if request.form else request.json
-    existing_user = db.session.query(Users).filter(Users.user_id == id).first()
-
-    new_user = Users.new_user
-    populate_object(existing_user, req_data)
-
-    new_user.password = generate_passport_hash(new_user.password).decode('utf8')
-
-    db.session.commit()
-
-    return jsonify("Customer Created"), 200
-
-
-def add_user():
-    req_data = request.form if request.form else request.json
-
-    if not req_data:
-        return jsonify("Please enter all the required fields"), 401
-
-    new_user = Users.new_user()
-
-    populate_object(new_user, req_data)
-
-    new_user.password = generate_passport_hash(new_user.password).decode('utf8')
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify(user_schema.dump(new_user)), 200
-
-# READ
-
-
-def get_all_active_customers(request):
-    customers = db.session.query(Customer).filter(Customer.active == True).all()
-
-    if not customers:
-        return jsonify('No customer Exist'), 404
-
-    else:
-        return jsonify(customer_schema.dump(customers)), 200
-
-
-def get_users_by_id(id):
-    customer = db.session.query(Customer).filter(Customer.cust_id == id).first()
-
-    if not customer:
-        return jsonify("That customer does not exist"), 404
-
-    else:
-        return jsonify(customer_schema.dump(customer)), 200
-
-# UPDATE
-
-
+#UPDATE    # I want the customer to be able to update their Customer Table information only.
 def update_customer(id):
     req_data = request.form if request.form else request.json
     existing_customer = db.session.query(Customer).filter(Customer.cust_id == id).first()
-    populate_object(existing_customer, req_data)
 
-    existing_customer.password = generate_password_hash(existing_customer.password).decode('utf8')
+    if not existing_customer:
+        return jsonify("Customer not found"), 404
+    
+    auth_token = request.headers.get('Authorization')
+    if not auth_token:
+        return jsonify("Authorization token missing"), 401
+    
+    decoded_token = decoded_token(auth_token)
+    if not decoded_token:
+        return jsonify("Invalid token"), 401
+    
+    if decoded_token['cust_id'] != existing_customer.cust_id:
+        return jsonify("Unauthorized"), 403
+
+    existing_customer.first_name = req_data.get('first_name', existing_customer.first_name)
+    existing_customer.last_name = req_data.get('last_name', existing_customer.last_name)
+    existing_customer.email = req_data.get('email', existing_customer.email)
+    existing_customer.phone = req_data.get('phone', existing_customer.phone)
 
     db.session.commit()
 
-    return jsonify('Customer Created'), 200
+    return jsonify("Customer information Updated"), 200
 
-# DEACTIVATE/ACTIVATE
 
-# DELETE
+# DEACTIVATE  I wanted to prevent them from deactivating themselves but not sure that was accomplished here. 
+def deactivate_customer(id):
+    customer = db.session.query(Customer).filter(Customer.cust_id == id).first()
+
+    if not customer:
+        return jsonify("Customer not found"), 404
+    
+    auth_token = request.headers.get('Authorization')
+    if not auth_token:
+        return jsonify("Authorization token missing"), 401
+    
+    decoded_token = decoded_token(auth_token)
+    if not decoded_token:
+        return jsonify("Invalid token"), 401
+    
+    if decoded_token['cust_id'] != customer.cust_id:
+        return jsonify("Unauthorized"), 403
+    
+    if decoded_token['role'] != 'event_planner':
+        return jsonify("Unauthorized to change status"), 403
+    
+    customer.active=False
+    db.session.commit()
+
+    return jsonify ("Customer Deactivated"), 200
+
+
+# ACTIVATE  If the Customer is deactivated by the Event Planner then Customer should not be able to activate themselves.  
+#Event Planner is the only one allowed to activate and deactivate a Customer.
+def activate_customer(id):
+    customer = db.sesstion.query(Customer).filter(Customer.cust_id == id).first()
+
+    if not customer:
+        return jsonify("Customer not found"), 404
+    
+    auth_token = request.headers.get('Authorization')
+    if not auth_token:
+        return jsonify("Authorization token missing"), 401
+    
+    decoded_token = decoded_token(auth_token)
+    if not decoded_token:
+        return jsonify("Invalid token"), 401
+    
+    if decoded_token['cust_id'] != customer.cust_id:
+        return jsonify("Unauthorized"), 403
+    
+    if decoded_token['role'] != 'event_planner':
+        return jsonify("Unauthorized to change status"), 403
+    
+    customer.active=True
+    db.session.commit()
+
+    return jsonify ("Customer Activated"), 200
+
+
+# DELETE Customer should not be allowed to Delete themselves.  Only the Event Planner can delete customer.  
+def delete_customer(id):
+    customer = db.sesstion.query(Customer).filter(Customer.cust_id == id).first()
+
+    if not customer:
+        return jsonify("Customer not found"), 404
+    
+    auth_token = request.headers.get('Authorization')
+    if not auth_token:
+        return jsonify("Authorization token missing"), 401
+    
+    decoded_token = decoded_token(auth_token)
+    if not decoded_token:
+        return jsonify("Invalid token"), 401
+    
+    if decoded_token['cust_id'] != customer.cust_id:
+        return jsonify("Unauthorized"), 403
+    
+    if decoded_token['role'] != 'event_planner':
+        return jsonify("Unauthorized to Delete"), 403
+    
+    db.session.delete(customer)
+    db.session.commit()
+
+    return jsonify ("Customer Deleted"), 200

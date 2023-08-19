@@ -1,6 +1,7 @@
 from flask import jsonify, request, Blueprint
 from flask_bcrypt import check_password_hash
 
+
 from datetime import datetime, timedelta
 
 from models.customer import Customer
@@ -23,8 +24,8 @@ def auth_token_add():
     user_data = db.session.query(Customer).filter(Customer.email == email).filter(Customer.active).first()
 
     if not email or not password or not user_data:
-        return jsonify({"message": "Invalid Login"}), 401
-
+        return jsonify({"Message": "Invalid Login"}), 401
+    
     existing_tokens = db.session.query(AuthTokens).filter(AuthTokens.user_id == user_data.user_id).all()
     if existing_tokens:
         for token in existing_tokens:
@@ -35,4 +36,6 @@ def auth_token_add():
     db.session.add(new_token)
     db.session.commit()
 
-    return jsonify({"message": {"auth_token": auth_token_schema.dump(new_token)}})
+    token_data = auth_token_schema.dump(new_token)
+
+    return jsonify({"Message": {"auth_token": token_data}})
