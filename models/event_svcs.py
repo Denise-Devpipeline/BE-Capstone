@@ -1,7 +1,7 @@
 import marshmallow as ma
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from models.event_svcs import EventSvcsSchema
+from models.customer import CustomersSchema
 from db import db
 
 class EventSvcs(db.Model):
@@ -14,7 +14,7 @@ class EventSvcs(db.Model):
     event_date = db.Column(db.String(), nullable=False)
     activities = db.Column(db.String())
     
-    #Need assistance understanding this part when using an XREF table and connecting overall.
+    #Need assistance understanding this part when using an XREF table and connecting overall.  I may not need this here since on plannerxref now.
     cust_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Customers.cust_id'), nullable=False)
     venue_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Event Services.service_id'), nullable=False)
 
@@ -31,8 +31,8 @@ class EventSvcs(db.Model):
     
 class EventSvcsSchema(ma.Schema):
     class Meta:
-        fields = ['planner_id', 'phone', 'email', 'password', 'city', 'active']
-    EventSvcs = ma.fields.Nested(EventSvcsSchema())
+        fields = ['service_id', 'theme', 'location', 'service_bid', 'event_date', 'activities']
+    EventSvcs = ma.fields.Nested(CustomersSchema())
 
 event_service_schema = EventSvcsSchema()
 event_services_schema = EventSvcsSchema(ma=True)

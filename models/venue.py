@@ -1,7 +1,7 @@
 import marshmallow as ma
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from models.venue import VenueSchema
+from models.event_svcs import EventSvcsSchema
 from db import db
 
 class Venue(db.Model):
@@ -14,17 +14,21 @@ class Venue(db.Model):
     email = db.Column(db.String(), nullable=False, unique=True)
     accomodations = db.Column(db.String())
     seasons = db.Column(db.String())
+
+    active = db.Column(db.Boolean(), default=True)
+
     
     #Need assistance understanding this part when using an XREF table.
     service_id = db.Column(UUID(as_uuid=True), db.ForeignKey("EventServices.service_id"), nullable=False)
 
 
-    def __init__(self, venue_name, venue_address, phone, email, accomodations, active):
+    def __init__(self, venue_name, venue_address, phone, email, accomodations, seasons, active):
         self.venue_name = venue_name
         self.venue_address = venue_address
         self.phone = phone
         self.email = email
         self.accomodations = accomodations
+        self.seasons = seasons
         self.active = active
 
     def new_venue():
@@ -32,8 +36,8 @@ class Venue(db.Model):
     
 class VenueSchema(ma.Schema):
     class Meta:
-        fields = ['venue_id', 'venue_name', 'venue_address', 'phone', 'email', "accomodaitons", 'active']
-    Venue = ma.fields.Nested(VenueSchema())
+        fields = ['venue_id', 'venue_name', 'venue_address', 'phone', 'email', "accomodaitons", 'seasons', 'active']
+    venue = ma.fields.Nested(EventSvcsSchema())
 
 venue_schema = VenueSchema()
 venues_schema = VenueSchema(ma=True)

@@ -1,11 +1,11 @@
 import marshmallow as ma
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from models.event_planner import EventPlannerSchema
+from models.planner_event_xref import PlannerEventXRefSchema
 from db import db
 
 class EventPlanner(db.Model):
-    __tablename__= "Event Planners"
+    __tablename__= "EventPlanners"
 
     planner_id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     phone = db.Column(db.String(), nullable=False)
@@ -19,16 +19,16 @@ class EventPlanner(db.Model):
         self.phone = phone
         self.email = email
         self.password = password
-        self.city = specialty
+        self.specialty = specialty
         self.active = active
 
     def new_event_planner():
-        return EventPlanner("", "", "", "", "", True)
+        return EventPlanner("", "", "", "", True)
     
 class EventPlannerSchema(ma.Schema):
     class Meta:
-        fields = ['planner_id', 'phone', 'email', 'password', 'city', 'active']
-    EventPlanner = ma.fields.Nested(EventPlannerSchema())
+        fields = ['planner_id', 'phone', 'email', 'password', 'specialty', 'active']
+    EventPlanner = ma.fields.Nested(PlannerEventXRefSchema())
 
 event_planner_schema = EventPlannerSchema()
 event_planners_schema = EventPlannerSchema(ma=True)
