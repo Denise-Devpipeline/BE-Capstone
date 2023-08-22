@@ -15,6 +15,7 @@ class EventPlanner(db.Model):
     
     active = db.Column(db.Boolean(), default=True)
 
+    services = db.relationship("EventServices", secondary="PlannerEventXRef", back_populates = "planner")
     def __init__(self, phone, email, password, specialty, active):
         self.phone = phone
         self.email = email
@@ -27,8 +28,9 @@ class EventPlanner(db.Model):
     
 class EventPlannerSchema(ma.Schema):
     class Meta:
-        fields = ['planner_id', 'phone', 'email', 'password', 'specialty', 'active']
-    EventPlanner = ma.fields.Nested(PlannerEventXRefSchema())
+        fields = ['planner_id', 'phone', 'email', 'password', 'specialty', 'active', "services"]
+
+    services = ma.fields.Nested("EventServices")
 
 event_planner_schema = EventPlannerSchema()
 event_planners_schema = EventPlannerSchema(ma=True)

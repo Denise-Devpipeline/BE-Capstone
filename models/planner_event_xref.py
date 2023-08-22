@@ -15,23 +15,23 @@ class PlannerEventXref(db.Model):
     planner = db.relationship('EventPlanners', back_populates='PlannerEventXRef')
     service = db.relationship('EventServices', back_populates='PlannerEventXRef')
 
-    def __init__(self, planner_id, service_id):
-        self.planner_id = planner_id
-        self.service_id = service_id
+    # def __init__(self, planner_id, service_id):
+    #     self.planner_id = planner_id
+    #     self.service_id = service_id
       
         
 
-    def get_new_plannerx():
-        return PlannerEventXref("", "")
+    # def get_new_plannerx():
+    #     return PlannerEventXref("", "")
 
 
-class PlannerEventXRefSchema(ma.Schema):
-    class Meta:
-        fields = ['planner_id', 'service_id', 'planner', 'service']
+# class PlannerEventXRefSchema(ma.Schema):
+#     class Meta:
+#         fields = ['planner_id', 'service_id', 'planner', 'service']
 
-    plannerx = ma.fields.Nested('EventPlannerSchema', only=['phone', 'email', 'password', 'specialty'])
-    servicex = ma.fields.Nested('EventSvcsSchema', only=['theme', 'location', 'service_bid', 'event_date', 'activities'])
+#     plannerx = ma.fields.Nested('EventPlannerSchema', only=['phone', 'email', 'password', 'specialty'])
+#     servicex = ma.fields.Nested('EventSvcsSchema', only=['theme', 'location', 'service_bid', 'event_date', 'activities'])
 
 
-planner_event_xref_schema = PlannerEventXRefSchema()
-planner_events_xref_schema = PlannerEventXRefSchema(many=True)
+# planner_event_xref_schema = PlannerEventXRefSchema()
+# planner_events_xref_schema = PlannerEventXRefSchema(many=True)

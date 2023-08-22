@@ -47,4 +47,4 @@ app.register_blueprint(EventSvcs)  #OR what is on line 47
 app.register_blueprint(event_services_routes, url_prefix='/event_services')
 app.register_blueprint(Venue)
 # Does auth belong in here?
-app.register_blueprint(Auth)
+app.register_blueprint(AuthTokens)

@@ -11,6 +11,7 @@ class AuthTokens(db.Model):
 
     auth_token = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("Customers.cust_id"), nullable=False)
+    #Would the planner id also go on here?  
     expiration = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, cust_id, expiration):

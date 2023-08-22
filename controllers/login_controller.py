@@ -23,17 +23,17 @@ def auth_token_add():
     token_request = request.json
     email = token_request.get('email')
     password = token_request.get('password')
-    expire = datetime.now() + timedelta(hours=12)
+    expire = datetime.now() + timedelta(hours=1)
     user_data = db.session.query(Customer).filter(Customer.email == email).filter(Customer.active).first()
 
     if not user_data:
         user_data = db.session.query(EventPlanner).filter(EventPlanner.email == email, Customer.active == True).first()
 
     if not email or not password or not user_data:
-        return jsonify({"Message": "Invalid Login"}), 401
+        return jsonify({"Message": "Invalid email or password"}), 401
     
     if not check_password_hash(user_data.password, password):
-        return jsonify({"Message": "Invalid Login"}), 401
+        return jsonify({"Message": "Invalid email or password"}), 401
     
     existing_tokens = db.session.query(AuthTokens).filter(AuthTokens.user_id == user_data.user_id).all()
     if existing_tokens:
