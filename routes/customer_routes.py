@@ -1,5 +1,9 @@
-from flask import request, Blueprint
+from flask import request, jsonify, Blueprint
+from flask_bcrypt import generate_passport_hash
+from db import db
+from models.customer import Customer
 from controllers import customer_controller
+
 
 customer_routes = Blueprint('customer_routes', __name__)
 
@@ -23,6 +27,7 @@ def activate_customer(id):
 def delete_customer(id):
     return customer_controller.delete_customer(request, id)
     
-    
+ 
+
     
     

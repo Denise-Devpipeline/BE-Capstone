@@ -35,7 +35,7 @@ def get_all_event_planners():
     return jsonify(event_planners_schema.dump(event_planners)), 200
 
     
-def get_all_event_planners_by_id(id):
+def get_all_event_planners_by_id(id): #This makes no sense, but leaving it just in case.....
     event_planner = db.session.query(EventPlanner).filter(EventPlanner.planner_id == id).first()
 
     if not event_planner:

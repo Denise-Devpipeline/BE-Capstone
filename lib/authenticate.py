@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 def authenticate(func):
     def wrapper(*args, **kwargs):
-        if authenticated:
+        if authenticate:
             return func(*args, **kwargs)
         
         else:

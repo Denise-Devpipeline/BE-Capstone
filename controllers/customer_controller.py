@@ -1,17 +1,40 @@
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from flask_bcrypt import generate_passport_hash
 
 from db import db
 from models.customer import Customer, customer_schema, customers_schema
 from util.reflection import populate_object
 
+customer_routes = Blueprint('customer_routes', __name__)
 #When a customer is being created they must have all of the fields filled in.  
 #The "active" status should be automatic.
 #Customers can create themselves and see ONLY thier information.
 #There should be a message that appears if they try and access ALL Customers or Event Planners that they cannnot.
 #Customers cannot delete themselves or deactivate themselves.
 
+#Should be able to grab a customers by the Event Svcs Id.  
 
+@customer_routes.route('/customers/get_all_customers', method=["GET"])   #Started with this but not sure if it was the right way. Looking to get all customers and those customers match up with an event planner.
+def get_all_customers():
+    auth_token = request.headers.get('Authorization')
+    if not auth_token:
+        return jsonify({"Message": "Authorization token missing"}), 401
+    
+    decoded_token = decoded_token(auth_token)
+    
+    if not decoded_token:
+        return jsonify({"Message": "Invalid token"}), 401
+    
+    if decoded_token['role'] != 'event_planner':
+        return jsonify({"Message": "Unauthorized"}), 403
+    
+    planner_id = decoded_token['user_id']
+    customers = db.session.query(Customer).filter(Customer.planner_id == planner_id).all()
+
+    if not customers:
+        return jsonify({"Message": "No customers found"}), 404
+    
+    return jsonify(customers_schema.dump(customers)), 200
 
 # CREATE
 def add_customer():

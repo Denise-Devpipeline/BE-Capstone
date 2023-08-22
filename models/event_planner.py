@@ -13,9 +13,6 @@ class EventPlanner(db.Model):
     password = db.Column(db.String(), nullable=False)
     specialty = db.Column(db.String(), nullable=False)
     
-    #Need assistance understanding this part when using an XREF table.  What about db.relationship('EventSvcs', backref=db.backref('EventPlanner', lazy=True )
-    service_id = db.Column(UUID(as_uuid=True), db.ForeignKey("EventServices.event_id"), nullable=False)
-
     active = db.Column(db.Boolean(), default=True)
 
     def __init__(self, phone, email, password, specialty, active):
