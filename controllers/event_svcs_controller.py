@@ -1,9 +1,18 @@
+from flask import Flask
 from flask import request, Response, jsonify
 from flask_bcrypt import generate_passport_hash
 
 from db import db
 from models.event_svcs import EventSvcs, event_service_schema, event_services_schema
 from util.reflection import populate_object
+
+from routes.event_svcs_routes import event_svcs_routes
+
+app = Flask(__name__)
+app.register_blueprint(event_svcs_routes)
+
+if __name__ == '__main__':
+    app.run()
 
 #ADD To add Event Services, there needs to be Event date and Location fields added to create.
 def add_event_services():

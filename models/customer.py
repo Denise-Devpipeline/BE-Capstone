@@ -17,8 +17,7 @@ class Customer(db.Model):
     state = db.Column(db.String(), nullable=False)
     event_date = db.Column(db.String(), nullable=False)
     
-    #Need assistance understanding this part when using an XREF table.
-    service_id = db.Column(UUID(as_uuid=True), db.ForeignKey("EventServices.event_id"), nullable=False)
+    
 
     active = db.Column(db.Boolean(), default=True)
 
