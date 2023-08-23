@@ -1,7 +1,6 @@
 from flask import Flask
-from routes import event_services_routes
+from dotenv import load_dotenv
 from db import *
-
 import os
 from flask_marshmallow import Marshmallow
 
@@ -43,8 +42,11 @@ ma = Marshmallow(app)
 
 app.register_blueprint(Customer)
 app.register_blueprint(EventPlanner)
-app.register_blueprint(EventSvcs)  #OR what is on line 47
-app.register_blueprint(event_services_routes, url_prefix='/event_services')
+app.register_blueprint(EventSvcs)  
+
 app.register_blueprint(Venue)
 # Does auth belong in here?
 app.register_blueprint(AuthTokens)
+
+if __name__ == "__main__":
+    app.run(port=8086, host="0.0.0.0", debug=True)

@@ -1,7 +1,8 @@
 import marshmallow as ma
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from models.event_svcs import EventSvcsSchema
+from models.event_svcs import EventSvcs
+from models.venue import Venue
 from db import db
 
 class Customer(db.Model):
@@ -16,9 +17,6 @@ class Customer(db.Model):
     city = db.Column(db.String(), nullable=False)
     state = db.Column(db.String(), nullable=False)
     event_date = db.Column(db.String(), nullable=False)
-    
-    
-
     active = db.Column(db.Boolean(), default=True)
 
     def __init__(self, first_name, last_name, phone, email, password, city, state, event_date, active):
@@ -33,12 +31,12 @@ class Customer(db.Model):
         self.active = active
 
     def new_customer():
-        return Customer("", "", "", "", "", "", "", "", "", True)
+        return Customer("", "", "", "", "", "", "", "", True)
     
 class CustomersSchema(ma.Schema):
     class Meta:
         fields = ['cust_id', 'first_name', 'last_name', 'phone', 'email', 'password', 'city', 'state',  "event services", 'active']
-    eventServices = ma.fields.Nested(EventSvcsSchema())
+    eventServices = ma.fields.Nested(EventSvcs, Venue)
 
 customer_schema = CustomersSchema()
-customers_schema = CustomersSchema(ma=True)
+customers_schema = CustomersSchema(many=True)

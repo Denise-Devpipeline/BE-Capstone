@@ -1,7 +1,7 @@
 import marshmallow as ma
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from models.event_svcs import EventSvcsSchema
+from models.venue import VenueSchema
 from db import db
 
 class Venue(db.Model):
@@ -37,7 +37,7 @@ class Venue(db.Model):
 class VenueSchema(ma.Schema):
     class Meta:
         fields = ['venue_id', 'venue_name', 'venue_address', 'phone', 'email', "accomodaitons", 'seasons', 'active']
-    venue = ma.fields.Nested(EventSvcsSchema())
+    venue = ma.fields.Nested(VenueSchema)
 
 venue_schema = VenueSchema()
-venues_schema = VenueSchema(ma=True)
+venues_schema = VenueSchema(many=True)

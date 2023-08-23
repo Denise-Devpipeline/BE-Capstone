@@ -12,8 +12,8 @@ class PlannerEventXref(db.Model):
 
     
     #Not sure what to put in here yet.
-    planner = db.relationship('EventPlanners', back_populates='PlannerEventXRef')
-    service = db.relationship('EventServices', back_populates='PlannerEventXRef')
+    # planner = db.relationship('EventPlanners', back_populates='PlannerEventXRef')
+    # service = db.relationship('EventServices', back_populates='PlannerEventXRef')
 
     # def __init__(self, planner_id, service_id):
     #     self.planner_id = planner_id
