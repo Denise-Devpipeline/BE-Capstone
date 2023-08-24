@@ -1,8 +1,9 @@
 import marshmallow as ma
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-# from models.event_svcs import EventSvcs, event_service_schema, event_services_schema
-from models.event_svcs import EventSvcsSchema
+# from controllers.event_svcs_controller import EventSvcs
+from models.event_svcs import EventSvcs, event_service_schema, event_services_schema
+# from models.event_svcs import EventSvcsSchema
 # from models.event_planner import EventPlannerSchema
 from db import db
 

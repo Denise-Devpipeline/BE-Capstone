@@ -1,7 +1,7 @@
 import marshmallow as ma
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from models.venue import VenueSchema
+# from controllers.venue_controller import Venue
 from db import db
 
 class Venue(db.Model):

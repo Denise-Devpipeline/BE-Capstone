@@ -1,20 +1,13 @@
 from flask import request, jsonify, Blueprint
-from flask_bcrypt import generate_passport_hash
-
 from db import db
 from models.customer import Customer, customer_schema, customers_schema
+from util.authentication import decoded_token
+from util.hashing import generate_passport_hash
 from util.reflection import populate_object
 
-customer_routes = Blueprint('customer_routes', __name__)
-#When a customer is being created they must have all of the fields filled in.  
-#The "active" status should be automatic.
-#Customers can create themselves and see ONLY thier information.
-#There should be a message that appears if they try and access ALL Customers or Event Planners that they cannnot.
-#Customers cannot delete themselves or deactivate themselves.
+customer_controller = Blueprint('customer_controller', __name__)
 
-#Should be able to grab a customers by the Event Svcs Id.  
-
-@customer_routes.route('/customers/get_all_customers', method=["GET"])   #Started with this but not sure if it was the right way. Looking to get all customers and those customers match up with an event planner.
+@customer_controller.route('/customers/get_all_customers', methods=["GET"])
 def get_all_customers():
     auth_token = request.headers.get('Authorization')
     if not auth_token:
@@ -83,6 +76,7 @@ def update_customer(id):
 
 
 # DEACTIVATE  I wanted to prevent them from deactivating themselves but not sure that was accomplished here. 
+@customer_controller.route('/customers/deactivate/<id>', methods=["PATCH"])
 def deactivate_customer(id):
     customer = db.session.query(Customer).filter(Customer.cust_id == id).first()
 
@@ -111,6 +105,7 @@ def deactivate_customer(id):
 
 # ACTIVATE  If the Customer is deactivated by the Event Planner then Customer should not be able to activate themselves.  
 #Event Planner is the only one allowed to activate and deactivate a Customer.
+@customer_controller.route('/customers/activate/<id>', methods=["PATCH"])
 def activate_customer(id):
     customer = db.sesstion.query(Customer).filter(Customer.cust_id == id).first()
 
@@ -137,7 +132,8 @@ def activate_customer(id):
     return jsonify ({"Message": "Customer Activated"}), 200
 
 
-# DELETE Customer should not be allowed to Delete themselves.  Only the Event Planner can delete customer. 
+# DELETE Customer should not be allowed to Delete themselves.  Only the Event Planner can delete customer.
+@customer_controller.route('/customers/delete/<id>', methods=["DELETE"]) 
 def delete_customer(id):
     customer = db.sesstion.query(Customer).filter(Customer.cust_id == id).first()
 

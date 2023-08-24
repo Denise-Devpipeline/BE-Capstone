@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from controllers import venue_controller
 
 venue_routes = Blueprint('venue_routes', __name__)

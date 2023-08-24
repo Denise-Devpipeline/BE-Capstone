@@ -1,6 +1,7 @@
 import marshmallow as ma
 from sqlalchemy.dialects.postgresql import UUID
 
+
 from db import db
 
 class PlannerEventXref(db.Model):

@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import request, Response, jsonify
+from flask import request, jsonify
 from flask_bcrypt import generate_passport_hash
 
 from db import db
