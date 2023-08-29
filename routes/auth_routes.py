@@ -1,23 +1,17 @@
 from flask import request, jsonify, Blueprint
-from flask_bcrypt import check_password_hash
+from flask import Flask
+from flask_bcrypt import Bcrypt
 from models import User
-from lib.authenticate import auth, auth_with_return
+from lib.authenticate import auth
+from db import db
 
-################ STILL HAVE A WAYS TO GO ON THIS PAGE.  
+
+app = Flask(__name__)
+bcrypt = Bcrypt(app)
+
+
 
 auth_routes = Blueprint('auth_routes', __name__)
-
-role_permissions = {
-    "EventPlanner": ["manage_users", "view_event_svcs", "view_venue"], 
-    "Customer": ["edit_profile"]
-}
-
-#base role going to be planner or just a user? 
-login_info = []
-for planner_id in planner_ids:
-    config.base_roles(planner_id)
-
-hashed_password = bcrypt.generate_password_hash('8888').decode('utf8')
 
 @auth_routes.route('/auth/update', methods=["PUT"])
 @auth
@@ -37,11 +31,23 @@ def auth_user():
         return jsonify({"Token": "token"}), 200
     else:
         return jsonify({"Message": "Invalid Credentials"}), 401
-    
+
+
+@app.route('/login', methods=["POST"])
+def login():
+    data = request.json
+    email = data.get('email') 
+    password = data.get('password')
+
+    hashed_password = bcrypt.generate_password_hash(8888).decode("utf-8")
+
+    user = User(email=email, password=hashed_password)
+    db.session.add(user)
+    db.session.commit()
+
   
-# @auth_routes.route('/profile', methods=['GET'])
-# @auth_required
-# def get_profile():
-#     user_id = decode_token(request.headers.get('Authorization'))
-#     user = User.query.get(user_id)
-#     return jsonify({"username": user.username, "email": user.email}), 200
+@auth_routes.route('/profile', methods=['GET'])
+def get_profile():
+    user_id = decode_token(request.headers.get('Authorization'))
+    user = User.query.get(user_id)
+    return jsonify({"username": user.username, "email": user.email}), 200

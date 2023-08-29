@@ -1,6 +1,9 @@
 Login:8888
 Password:deezcapstone@gmail.com
 
+Link for BE Capstone Postman collection:
+https://solar-meadow-704042.postman.co/workspace/Team-Workspace~ecc52ca2-7897-4d33-8f19-0ed314512819/collection/25296206-11a318af-8dfc-4858-abf5-68aa4dbb24c4?action=share&creator=25296206
+
 About:
 This idea is about event planning. There are customers that work with event planners to work out planned events with dates, themes and services provided.
 
